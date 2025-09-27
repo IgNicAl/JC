@@ -5,7 +5,7 @@ import './AdminRegistration.css';
 
 const INITIAL_FORM_STATE = {
   name: '',
-  sexo: '', // NOTE: Campo mantido no form por requisito de não alterar o visual, mas não será enviado.
+  gender: '', // NOTE: Campo mantido no form por requisito de não alterar o visual, mas não será enviado.
   dataNascimento: '', // NOTE: Campo mantido no form, mas não será enviado.
   email: '',
   senha: '',
@@ -112,8 +112,8 @@ function AdminRegistration() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="sexo"><i className="fas fa-venus-mars" /> Sexo</label>
-            <select id="sexo" name="sexo" value={formData.sexo} onChange={handleChange}>
+            <label htmlFor="gender"><i className="fas fa-venus-mars" /> Gênero</label>
+            <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
               <option value="">Selecione...</option>
               <option value="M">Masculino</option>
               <option value="F">Feminino</option>

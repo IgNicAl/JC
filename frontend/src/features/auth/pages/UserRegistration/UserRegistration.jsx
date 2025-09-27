@@ -8,7 +8,7 @@ const INITIAL_FORM_STATE = {
   email: '',
   senha: '',
   dataNascimento: '',
-  sexo: '',
+  gender: '',
 };
 
 /**
@@ -36,7 +36,7 @@ function UserRegistration() {
         email: formData.email,
         password: formData.senha,
         dataNascimento: formData.dataNascimento,
-        sexo: formData.sexo,
+        gender: formData.gender,
       };
       await authService.register(userData);
       setMessage({ type: 'success', text: 'Usuário cadastrado com sucesso!' });
@@ -91,8 +91,8 @@ function UserRegistration() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="sexo"><i className="fas fa-venus-mars" /> Sexo</label>
-            <select id="sexo" name="sexo" value={formData.sexo} onChange={handleChange}>
+            <label htmlFor="gender"><i className="fas fa-venus-mars" /> Gênero</label>
+            <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
               <option value="">Selecione...</option>
               <option value="M">Masculino</option>
               <option value="F">Feminino</option>

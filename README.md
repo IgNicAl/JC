@@ -30,4 +30,3 @@
    * url\_imagem\_destaque (Texto)
    * data\_publicacao (Data e Hora, Obrigatório)
 
-# JC

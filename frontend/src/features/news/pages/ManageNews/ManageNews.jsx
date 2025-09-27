@@ -30,7 +30,7 @@ function ManageNews() {
     try {
       setLoading(true);
       setError('');
-      const response = await newsService.getAll();
+      const response = await newsService.getAllForManagement();
       setNews(response.data);
     } catch (err) {
       setError('Erro ao carregar notícias. Tente novamente.');

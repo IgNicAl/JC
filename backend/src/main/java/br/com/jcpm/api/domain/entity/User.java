@@ -20,6 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,33 +38,35 @@ public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
+  @JdbcTypeCode(SqlTypes.VARCHAR)
+  @Column(columnDefinition = "CHAR(36)")
   private UUID id;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private UserType userType = UserType.USER;
+
+  @NotBlank(message = "Name é obrigatório")
+  @Column(nullable = false)
+  private String name;
 
   @NotBlank(message = "Username é obrigatório")
   @Size(min = 3, max = 20, message = "Username deve ter entre 3 e 20 caracteres")
   @Column(unique = true, nullable = false)
   private String username;
 
-  @NotBlank(message = "Password é obrigatório")
-  @Column(nullable = false)
-  private String password;
-
   @NotBlank(message = "Email é obrigatório")
   @Email(message = "Email deve ser válido")
   @Column(unique = true, nullable = false)
   private String email;
 
-  @NotBlank(message = "Name é obrigatório")
+  @NotBlank(message = "Password é obrigatório")
   @Column(nullable = false)
-  private String name;
-
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private UserType userType = UserType.USER;
-
-  private String biography;
+  private String password;
 
   private String profileImageUrl;
+
+  private String biography;
 
   @Column(nullable = false)
   private Boolean active = true;

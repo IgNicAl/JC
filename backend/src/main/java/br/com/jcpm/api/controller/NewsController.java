@@ -38,18 +38,24 @@ public class NewsController {
   }
 
   @GetMapping
-  public ResponseEntity<List<News>> getAllNews() {
+  public ResponseEntity<List<News>> getAllPublicNews() {
+    return ResponseEntity.ok(newsRepository.findAll());
+  }
+
+  @GetMapping("/manage")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('JOURNALIST')")
+  public ResponseEntity<List<News>> getNewsForManagement() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User currentUser = (User) authentication.getPrincipal();
 
-    // Se for ADMIN, retorna todas as notícias
     if ("ADMIN".equals(currentUser.getUserType().name())) {
       return ResponseEntity.ok(newsRepository.findAll());
     }
 
-    // Se for JOURNALIST, retorna apenas suas próprias notícias
+    // For JOURNALIST, return only their own news
     return ResponseEntity.ok(newsRepository.findByAuthorId(currentUser.getId()));
   }
+
 
   @GetMapping("/{id}")
   public ResponseEntity<News> getNewsById(@PathVariable UUID id) {

@@ -69,6 +69,7 @@ export const userService = {
  */
 export const newsService = {
   getAll: () => api.get('/api/noticias'),
+  getAllForManagement: () => api.get('/api/noticias/manage'),
   getById: (id) => api.get(`/api/noticias/${id}`),
   create: (newsData) => api.post('/api/noticias', newsData),
   update: (id, newsData) => api.put(`/api/noticias/${id}`, newsData),
