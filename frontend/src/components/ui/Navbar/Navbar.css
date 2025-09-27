@@ -1,0 +1,139 @@
+.navbar {
+  background: #ffffff;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 24px;
+}
+
+.navbar-logo {
+  color: #2c3e50;
+  justify-self: start;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.navbar-logo i {
+  margin-right: 10px;
+  color: #e74c3c;
+}
+
+.navbar-logo:hover {
+  color: #e74c3c;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/* Estilos dos botões */
+.nav-btn-login { background-color: #e74c3c; color: #fff; }
+.nav-btn-login:hover { background-color: #c0392b; transform: translateY(-2px); }
+.nav-btn-register { background-color: transparent; color: #e74c3c; border: 2px solid #e74c3c; }
+.nav-btn-register:hover { background-color: #e74c3c; color: #fff; }
+.nav-btn-admin { background-color: #3498db; color: #fff; }
+.nav-btn-admin:hover { background-color: #2980b9; transform: translateY(-2px); }
+.nav-btn-logout { background-color: #95a5a6; color: #fff; }
+.nav-btn-logout:hover { background-color: #7f8c8d; }
+
+.nav-user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-welcome {
+  color: #34495e;
+  font-size: 1rem;
+}
+
+.menu-icon {
+  display: none;
+}
+
+/* Estilos para o Menu Mobile */
+@media screen and (max-width: 960px) {
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 80px;
+    left: -100%;
+    opacity: 1;
+    transition: all 0.5s ease;
+    padding: 20px 0;
+    gap: 20px;
+  }
+
+  .nav-menu.active {
+    background: #fdfdfd;
+    left: 0;
+    opacity: 1;
+    transition: all 0.5s ease;
+    z-index: 1;
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-btn {
+    text-align: center;
+    padding: 1rem;
+    width: 90%;
+    display: table;
+  }
+
+  .nav-user-info {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .navbar-container {
+    padding: 0 20px;
+  }
+
+  .menu-icon {
+    display: block;
+    font-size: 1.8rem;
+    cursor: pointer;
+  }
+}
