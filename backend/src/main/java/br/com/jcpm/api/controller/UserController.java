@@ -3,6 +3,7 @@ package br.com.jcpm.api.controller;
 import br.com.jcpm.api.domain.entity.User;
 import br.com.jcpm.api.domain.enums.UserType;
 import br.com.jcpm.api.dto.UserResponse;
+import br.com.jcpm.api.dto.UserUpdateRequest; // Importar o novo DTO
 import br.com.jcpm.api.service.UserService;
 import java.util.List;
 import java.util.UUID;
@@ -52,21 +53,20 @@ public class UserController {
 
   @PutMapping("/me")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<UserResponse> updateMyProfile(@RequestBody User userDetails) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User currentUser =
-        userService
-            .findByUsername(authentication.getName())
-            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+  public ResponseEntity<UserResponse> updateMyProfile(@RequestBody UserUpdateRequest userDetails) {
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      User currentUser = userService.findByUsername(authentication.getName())
+              .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
-    currentUser.setName(userDetails.getName());
-    currentUser.setEmail(userDetails.getEmail());
-    currentUser.setBiography(userDetails.getBiography());
-    currentUser.setProfileImageUrl(userDetails.getProfileImageUrl());
+      currentUser.setName(userDetails.getName());
+      currentUser.setEmail(userDetails.getEmail());
+      currentUser.setBiography(userDetails.getBiografia());
+      currentUser.setProfileImageUrl(userDetails.getUrlImagemPerfil());
 
-    User updatedUser = userService.update(currentUser);
-    return ResponseEntity.ok(new UserResponse(updatedUser));
+      User updatedUser = userService.update(currentUser);
+      return ResponseEntity.ok(new UserResponse(updatedUser));
   }
+
 
   @GetMapping
   @PreAuthorize("hasRole('ADMIN')")
@@ -86,17 +86,18 @@ public class UserController {
   @PutMapping("/{id}")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<UserResponse> updateUser(
-      @PathVariable UUID id, @RequestBody User userDetails) {
+      @PathVariable UUID id, @RequestBody UserUpdateRequest userDetails) { // <-- Alterado para o DTO
     return userService
         .findById(id)
         .map(
             user -> {
+              // Mapeamento manual e seguro
               user.setName(userDetails.getName());
               user.setEmail(userDetails.getEmail());
-              user.setBiography(userDetails.getBiography());
-              user.setProfileImageUrl(userDetails.getProfileImageUrl());
+              user.setBiography(userDetails.getBiografia());
+              user.setProfileImageUrl(userDetails.getUrlImagemPerfil());
               user.setUserType(userDetails.getUserType());
-              user.setActive(userDetails.getActive());
+              user.setActive(userDetails.getAtivo());
 
               User updatedUser = userService.update(user);
               return ResponseEntity.ok(new UserResponse(updatedUser));

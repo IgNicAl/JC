@@ -72,8 +72,8 @@
 
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
   margin-bottom: 30px;
 }
 
@@ -85,6 +85,8 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
 }
 
 .user-card:hover {
@@ -93,8 +95,8 @@
 }
 
 .user-avatar {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
   border-radius: 50%;
   display: flex;
@@ -102,11 +104,22 @@
   justify-content: center;
   margin-bottom: 20px;
   box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+  overflow: hidden; /* Para a imagem se ajustar */
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .user-avatar i {
-  font-size: 24px;
+  font-size: 28px;
   color: white;
+}
+
+.user-info {
+  flex: 1;
 }
 
 .user-info h3 {
@@ -129,6 +142,62 @@
   color: #e74c3c;
   width: 16px;
 }
+
+.user-type {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.user-type.admin { background-color: #f8d7da; color: #721c24; }
+.user-type.journalist { background-color: #d1ecf1; color: #0c5460; }
+.user-type.user { background-color: #e2e3e5; color: #383d41; }
+
+
+.user-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.delete-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 
 .user-list-footer {
   text-align: center;

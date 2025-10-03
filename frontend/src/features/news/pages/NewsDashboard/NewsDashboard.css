@@ -1,0 +1,71 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f4f7f6;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.export-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #16a085;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.chart-section {
+  margin-bottom: 30px;
+}
+
+.recent-comments-section h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.comment-list-dashboard {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.comment-item-dashboard {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.comment-item-dashboard:last-child {
+  border-bottom: none;
+}
+
+.comment-item-dashboard p {
+  margin: 0 0 5px 0;
+}
+
+.comment-item-dashboard span {
+  font-size: 0.8rem;
+  color: #888;
+}

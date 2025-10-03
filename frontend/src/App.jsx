@@ -10,15 +10,14 @@ import Login from './features/auth/pages/Login/Login';
 import UserRegistration from './features/auth/pages/UserRegistration/UserRegistration';
 import InternalRegistration from './features/auth/pages/InternalRegistration/InternalRegistration';
 import UserList from './features/auth/pages/UserList/UserList';
+import EditUser from './features/auth/pages/EditUser/EditUser';
+import UserProfile from './features/auth/pages/UserProfile/UserProfile'; // Novo
 import CreateNews from './features/news/pages/CreateNews/CreateNews';
 import ManageNews from './features/news/pages/ManageNews/ManageNews';
 import EditNews from './features/news/pages/EditNews/EditNews';
+import NewsPage from './features/news/pages/NewsPage/NewsPage';
+import NewsDashboard from './features/news/pages/NewsDashboard/NewsDashboard'; // Novo
 
-/**
- * @description Componente que não renderiza UI, mas gerencia o redirecionamento
- * quando um evento 'unauthorized' é recebido de qualquer parte da aplicação.
- * @returns {null}
- */
 const RedirectController = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -33,11 +32,6 @@ const RedirectController = () => {
   return null;
 };
 
-/**
- * @description Componente principal da aplicação que configura o provedor de autenticação,
- * o roteamento e a estrutura de layout geral com Navbar e conteúdo principal.
- * @returns {JSX.Element} O componente raiz da aplicação.
- */
 export function App() {
   return (
     <AuthProvider>
@@ -51,8 +45,9 @@ export function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<UserRegistration />} />
+              <Route path="/noticia/:slug" element={<NewsPage />} />
+              <Route path="/perfil/:username" element={<UserProfile />} /> {/* Novo */}
 
-              {/* Rota para cadastro de admin/jornalista, deve ser protegida */}
               <Route
                 path="/cadastro-interno"
                 element={
@@ -62,7 +57,15 @@ export function App() {
                 }
               />
 
-              {/* Rotas de Admin */}
+              <Route
+                path="/admin/usuarios/editar/:id"
+                element={
+                  <ProtectedRoute roles={['ADMIN']}>
+                    <EditUser />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route
                 path="/admin/usuarios"
                 element={
@@ -72,7 +75,6 @@ export function App() {
                 }
               />
 
-              {/* Rotas Protegidas para Jornalistas e Admins */}
               <Route
                 path="/noticias/criar"
                 element={
@@ -97,8 +99,15 @@ export function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/noticias/:id/dashboard"
+                element={
+                  <ProtectedRoute roles={['JOURNALIST', 'ADMIN']}>
+                    <NewsDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-              {/* Rotas Protegidas apenas para Admins */}
               <Route
                 path="/users"
                 element={
@@ -116,7 +125,6 @@ export function App() {
                 }
               />
 
-              {/* Rota de fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

@@ -1,5 +1,13 @@
 package br.com.jcpm.api.domain.entity;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,15 +19,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.SqlTypes;
 
 /**
  * Representa a entidade Notícia no banco de dados.
@@ -45,6 +47,10 @@ public class News {
   @Column(nullable = false)
   private String title;
 
+  @NotBlank(message = "Slug é obrigatório")
+  @Column(unique = true, nullable = false)
+  private String slug;
+
   @NotBlank(message = "Resumo é obrigatório")
   @Column(length = 512, nullable = false)
   private String summary;
@@ -54,6 +60,11 @@ public class News {
   @Column(columnDefinition = "TEXT", nullable = false)
   private String content;
 
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Lob
+  @Column(columnDefinition = "JSON")
+  private String contentJson;
+
   @NotBlank(message = "URL da imagem de destaque é obrigatória")
   @Column(nullable = false)
   private String featuredImageUrl;
@@ -61,6 +72,10 @@ public class News {
   @NotNull(message = "Prioridade é obrigatória")
   @Column(nullable = false)
   private Integer priority = 1;
+
+  @NotNull(message = "Status é obrigatório")
+  @Column(nullable = false)
+  private String status = "RASCUNHO"; // RASCUNHO ou PUBLICADO
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)

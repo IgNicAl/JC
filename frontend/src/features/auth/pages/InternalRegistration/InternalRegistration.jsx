@@ -9,9 +9,11 @@ const INITIAL_FORM_STATE = {
   password: '',
   confirmPassword: '',
   name: '',
-  userType: 'ADMIN',
+  userType: 'JOURNALIST', // Padrão para Jornalista, pode ser alterado
   biography: '',
   profileImageUrl: '',
+  birthDate: '',
+  gender: '',
 };
 
 /**
@@ -29,38 +31,34 @@ function InternalRegistration() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const validateForm = () => {
-    if (formData.password !== formData.confirmPassword) {
-      return 'As senhas não coincidem.';
-    }
-    if (formData.password.length < 6) {
-      return 'A senha deve ter pelo menos 6 caracteres.';
-    }
-    return '';
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage({ type: '', text: '' });
 
-    const validationError = validateForm();
-    if (validationError) {
-      setMessage({ type: 'error', text: validationError });
+    if (formData.password !== formData.confirmPassword) {
+      setMessage({ type: 'error', text: 'As senhas não coincidem.' });
       setLoading(false);
       return;
     }
 
     try {
-      await authService.register({
+      // Enviando o payload completo, incluindo os novos campos e a confirmação de senha
+      const userData = {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        confirmPassword: formData.confirmPassword,
         name: formData.name,
         biography: formData.biography,
         profileImageUrl: formData.profileImageUrl,
         userType: formData.userType,
-      });
+        birthDate: formData.birthDate || null,
+        gender: formData.gender,
+      };
+
+      await authService.register(userData);
+
       setMessage({
         type: 'success',
         text: `Usuário ${formData.userType.toLowerCase()} cadastrado com sucesso! Redirecionando...`,
@@ -73,6 +71,8 @@ function InternalRegistration() {
       let errorMessage = 'Erro ao cadastrar usuário. Tente novamente.';
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
+      } else if (error.response?.data?.passwordConfirmed) {
+        errorMessage = error.response.data.passwordConfirmed;
       }
       setMessage({ type: 'error', text: errorMessage });
       console.error('Erro no cadastro:', error);
@@ -124,11 +124,28 @@ function InternalRegistration() {
             </div>
           </div>
 
+          <div className="form-row">
+            <div className="form-group">
+                <label htmlFor="userType"><i className="fas fa-user-shield" /> Tipo de Usuário *</label>
+                <select id="userType" name="userType" value={formData.userType} onChange={handleChange}>
+                  <option value="ADMIN">Administrador</option>
+                  <option value="JOURNALIST">Jornalista</option>
+                  <option value="USER">Usuário Padrão</option>
+                </select>
+            </div>
+            <div className="form-group">
+                <label htmlFor="birthDate"><i className="fas fa-calendar-alt" /> Data de Nascimento</label>
+                <input type="date" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
+            </div>
+          </div>
+
           <div className="form-group">
-            <label htmlFor="userType"><i className="fas fa-user-shield" /> Tipo de Usuário *</label>
-            <select id="userType" name="userType" value={formData.userType} onChange={handleChange}>
-              <option value="ADMIN">Administrador</option>
-              <option value="JOURNALIST">Jornalista</option>
+            <label htmlFor="gender"><i className="fas fa-venus-mars" /> Gênero</label>
+            <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
+                <option value="">Selecione...</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
             </select>
           </div>
 

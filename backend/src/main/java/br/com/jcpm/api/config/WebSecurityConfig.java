@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,7 +25,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * Configuração central de segurança da aplicação utilizando Spring Security.
- * Habilita a segurança web e a segurança baseada em métodos (como @PreAuthorize).
  */
 @Configuration
 @EnableWebSecurity
@@ -36,21 +36,11 @@ public class WebSecurityConfig {
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final JwtRequestFilter jwtRequestFilter;
 
-  /**
-   * Cria um bean para o codificador de senhas.
-   *
-   * @return Uma instância de BCryptPasswordEncoder para a codificação de senhas.
-   */
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
-  /**
-   * Configura o provedor de autenticação que utiliza o UserService e o PasswordEncoder.
-   *
-   * @return Uma instância de DaoAuthenticationProvider configurada.
-   */
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -59,26 +49,12 @@ public class WebSecurityConfig {
     return authProvider;
   }
 
-  /**
-   * Expõe o AuthenticationManager do Spring Security como um bean.
-   *
-   * @param authConfig A configuração de autenticação do Spring.
-   * @return O AuthenticationManager gerenciado pelo Spring.
-   * @throws Exception se houver erro ao obter o AuthenticationManager.
-   */
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
       throws Exception {
     return authConfig.getAuthenticationManager();
   }
 
-  /**
-   * Define a cadeia de filtros de segurança que processa as requisições HTTP.
-   *
-   * @param http O objeto HttpSecurity a ser configurado.
-   * @return A cadeia de filtros de segurança construída.
-   * @throws Exception se houver erro na configuração.
-   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -88,13 +64,15 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(
             auth ->
                 auth
-                    .requestMatchers("/api/auth/**")
+                    .requestMatchers("/api/auth/**", "/api/init/**")
                     .permitAll()
-                    .requestMatchers("/api/init/**")
+                    .requestMatchers(HttpMethod.GET, "/api/noticias/**", "/api/users/perfil/**")
                     .permitAll()
-                    .requestMatchers("/api/noticias/**")
+                    // Endpoints públicos de engajamento/leitura
+                    .requestMatchers(HttpMethod.GET, "/api/news/**")
                     .permitAll()
-                    .requestMatchers("/api/users/perfil/**")
+                    // Registrar view é público
+                    .requestMatchers(HttpMethod.POST, "/api/news/{newsId}/view")
                     .permitAll()
                     .anyRequest()
                     .authenticated());
@@ -105,11 +83,6 @@ public class WebSecurityConfig {
     return http.build();
   }
 
-  /**
-   * Configura as políticas de Cross-Origin Resource Sharing (CORS) para a aplicação.
-   *
-   * @return A fonte de configuração CORS.
-   */
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();

@@ -6,7 +6,7 @@ import './UserList.css';
 
 /**
  * @description Página para administradores gerenciarem todos os usuários do sistema.
- * Permite visualizar, criar e excluir usuários.
+ * Permite visualizar, criar, editar e excluir usuários.
  * @returns {JSX.Element} A página de gerenciamento de usuários.
  */
 function UserList() {
@@ -61,6 +61,24 @@ function UserList() {
       setDeletingId(null);
     }
   };
+
+  const handleEdit = (id) => {
+    navigate(`/admin/usuarios/editar/${id}`);
+  };
+
+  const getUserTypeLabel = (userType) => {
+    switch (userType) {
+      case 'ADMIN':
+        return { label: 'Administrador', icon: 'fa-user-shield' };
+      case 'JOURNALIST':
+        return { label: 'Jornalista', icon: 'fa-user-tie' };
+      case 'USER':
+        return { label: 'Usuário Padrão', icon: 'fa-user' };
+      default:
+        return { label: 'Desconhecido', icon: 'fa-user' };
+    }
+  };
+
 
   if (loading) {
     return (
@@ -117,49 +135,60 @@ function UserList() {
         </div>
       ) : (
         <div className="users-grid">
-          {users.map((user) => (
-            <div key={user.id} className="user-card">
-              <div className="user-avatar">
-                {user.urlImagemPerfil ? (
-                  <img src={user.urlImagemPerfil} alt={user.name} />
-                ) : (
-                  <i className="fas fa-user" />
-                )}
-              </div>
-              <div className="user-info">
-                <h3>{user.name}</h3>
-                <p className="user-username">@{user.username}</p>
-                <p className="user-email">
-                  <i className="fas fa-envelope" />
-                  {user.email}
-                </p>
-                <span className={`user-type ${user.userType.toLowerCase()}`}>
-                  <i className={`fas ${user.userType === 'ADMIN' ? 'fa-user-shield' : 'fa-user'}`} />
-                  {user.userType === 'ADMIN' ? 'Administrador' : 'Jornalista'}
-                </span>
-              </div>
-              <div className="user-actions">
-                <button
-                  type="button"
-                  onClick={() => handleDelete(user.id)}
-                  className="delete-btn"
-                  disabled={deletingId === user.id || user.id === currentUser.id}
-                >
-                  {deletingId === user.id ? (
-                    <>
-                      <i className="fas fa-spinner fa-spin" />
-                      Excluindo...
-                    </>
+          {users.map((user) => {
+            const userTypeInfo = getUserTypeLabel(user.userType);
+            return (
+              <div key={user.id} className="user-card">
+                <div className="user-avatar">
+                  {user.urlImagemPerfil ? (
+                    <img src={user.urlImagemPerfil} alt={user.name} />
                   ) : (
-                    <>
-                      <i className="fas fa-trash-alt" />
-                      Excluir
-                    </>
+                    <i className="fas fa-user" />
                   )}
-                </button>
+                </div>
+                <div className="user-info">
+                  <h3>{user.name}</h3>
+                  <p className="user-username">@{user.username}</p>
+                  <p className="user-email">
+                    <i className="fas fa-envelope" />
+                    {user.email}
+                  </p>
+                  <span className={`user-type ${user.userType.toLowerCase()}`}>
+                    <i className={`fas ${userTypeInfo.icon}`} />
+                    {userTypeInfo.label}
+                  </span>
+                </div>
+                <div className="user-actions">
+                  <button
+                    type="button"
+                    onClick={() => handleEdit(user.id)}
+                    className="edit-btn"
+                  >
+                    <i className="fas fa-edit" />
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(user.id)}
+                    className="delete-btn"
+                    disabled={deletingId === user.id || user.id === currentUser.id}
+                  >
+                    {deletingId === user.id ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin" />
+                        Excluindo...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-trash-alt" />
+                        Excluir
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

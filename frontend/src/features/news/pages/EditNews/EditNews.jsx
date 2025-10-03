@@ -1,43 +1,92 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { newsService } from '@/lib/api';
-import '../CreateNews/CreateNews.css';
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header';
+import List from '@editorjs/list';
+import ImageTool from '@editorjs/image';
+import Embed from '@editorjs/embed';
+import Quote from '@editorjs/quote';
+import Table from '@editorjs/table';
+import CodeTool from '@editorjs/code';
+import '../CreateNews/CreateNews.css'; // Reutilizando o mesmo CSS
 
-const INITIAL_FORM_STATE = {
-  title: '',
-  summary: '',
-  content: '',
-  featuredImageUrl: '',
-  priority: 1,
-};
-
-/**
- * @description Página com formulário para editar uma notícia existente.
- * @returns {JSX.Element} A página de edição de notícia.
- */
 function EditNews() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+  const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const editorRef = useRef(null);
 
+  // Efeito para buscar os dados da notícia
   useEffect(() => {
-    async function loadNews() {
+    const fetchNews = async () => {
       try {
+        setLoading(true);
         const response = await newsService.getById(id);
-        const { title, summary, content, featuredImageUrl, priority } = response.data;
-        setFormData({ title, summary, content, featuredImageUrl, priority });
+        setFormData(response.data);
       } catch (error) {
-        setMessage({ type: 'error', text: 'Erro ao carregar notícia. Tente novamente.' });
-        console.error('Erro ao carregar notícia:', error);
+        setMessage({ type: 'error', text: 'Erro ao carregar dados da notícia.' });
+        console.error('Erro:', error);
       } finally {
         setLoading(false);
       }
-    }
-    loadNews();
+    };
+    fetchNews();
   }, [id]);
+
+  // Efeito para inicializar o Editor.js APÓS os dados serem carregados
+  useEffect(() => {
+    // Só inicializa se não estiver carregando, se tiver dados e se o editor ainda não foi criado
+    if (!loading && formData && !editorRef.current) {
+      const editor = new EditorJS({
+        holder: 'editorjs',
+        tools: {
+          header: Header,
+          list: List,
+          image: {
+            class: ImageTool,
+            config: {
+              uploader: {
+                async uploadByFile(file) {
+                  const formData = new FormData();
+                  formData.append('image', file);
+                  try {
+                    const response = await fetch('/api/upload/image', {
+                      method: 'POST',
+                      body: formData,
+                    });
+                    const result = await response.json();
+                    return { success: 1, file: { url: result.url } };
+                  } catch (error) {
+                    console.error('Image upload failed:', error);
+                    return { success: 0 };
+                  }
+                },
+              },
+            },
+          },
+          embed: Embed,
+          quote: Quote,
+          table: Table,
+          code: CodeTool,
+        },
+        data: formData.contentJson ? JSON.parse(formData.contentJson) : { blocks: [] },
+        placeholder: 'Edite sua notícia aqui...',
+      });
+      editorRef.current = editor;
+    }
+
+    // Função de limpeza para destruir a instância do editor ao sair do componente
+    return () => {
+      if (editorRef.current && editorRef.current.destroy) {
+        editorRef.current.destroy();
+        editorRef.current = null;
+      }
+    };
+  }, [loading, formData]); // Depende do estado de 'loading' e 'formData'
 
   const handleChange = ({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: name === 'priority' ? parseInt(value, 10) : value }));
@@ -45,16 +94,35 @@ function EditNews() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!editorRef.current) {
+      setMessage({ type: 'error', text: 'Editor não inicializado.' });
+      return;
+    }
+
     setSaving(true);
     setMessage({ type: '', text: '' });
+
     try {
-      await newsService.update(id, formData);
+      const outputData = await editorRef.current.save();
+
+      if (outputData.blocks.length === 0) {
+        setMessage({ type: 'error', text: 'O conteúdo da notícia não pode estar vazio.' });
+        setSaving(false);
+        return;
+      }
+
+      const updatedNewsData = {
+        ...formData,
+        content: JSON.stringify(outputData),
+        contentJson: JSON.stringify(outputData),
+      };
+
+      await newsService.update(id, updatedNewsData);
       setMessage({ type: 'success', text: 'Notícia atualizada com sucesso!' });
-      setTimeout(() => {
-        navigate('/noticias/gerenciar');
-      }, 2000);
+      setTimeout(() => navigate('/noticias/gerenciar'), 2000);
     } catch (error) {
-      setMessage({ type: 'error', text: 'Erro ao atualizar notícia. Tente novamente.' });
+      const errorMessage = error.response?.data?.message || 'Erro ao atualizar notícia. Tente novamente.';
+      setMessage({ type: 'error', text: errorMessage });
       console.error('Erro ao atualizar:', error);
     } finally {
       setSaving(false);
@@ -69,6 +137,17 @@ function EditNews() {
           <p>Carregando notícia...</p>
         </div>
       </div>
+    );
+  }
+
+  if (!formData) {
+    return (
+        <div className="create-news-container">
+            <div className="message error">
+                <i className="fas fa-exclamation-circle" />
+                {message.text || 'Não foi possível carregar a notícia.'}
+            </div>
+        </div>
     );
   }
 
@@ -100,7 +179,7 @@ function EditNews() {
 
           <div className="form-group">
             <label htmlFor="content"><i className="fas fa-file-alt" /> Conteúdo Completo *</label>
-            <textarea id="content" name="content" value={formData.content} onChange={handleChange} required />
+            <div id="editorjs" style={{ border: '1px solid #ccc', borderRadius: '5px', minHeight: '300px' }}></div>
           </div>
 
           <div className="form-group">

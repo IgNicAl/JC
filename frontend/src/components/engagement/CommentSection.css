@@ -1,0 +1,104 @@
+.comment-section {
+  margin-top: 30px;
+}
+
+.comment-section h3 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.comment-form button {
+  align-self: flex-end;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.comment-form button:hover {
+  background-color: #c0392b;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.comment-item {
+  background-color: #fdfdfd;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  position: relative;
+}
+
+.comment-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.comment-author img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-author strong {
+  font-size: 1rem;
+}
+
+.comment-author span {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.comment-content {
+  line-height: 1.6;
+}
+
+.delete-comment-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.delete-comment-btn:hover {
+  color: #e74c3c;
+}

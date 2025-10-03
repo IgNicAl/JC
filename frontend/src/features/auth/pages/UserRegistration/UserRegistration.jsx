@@ -6,8 +6,9 @@ const INITIAL_FORM_STATE = {
   name: '',
   username: '',
   email: '',
-  senha: '',
-  dataNascimento: '',
+  password: '',
+  confirmPassword: '',
+  birthDate: '',
   gender: '',
 };
 
@@ -27,22 +28,30 @@ function UserRegistration() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage({ type: '', text: '' });
+
+    if (formData.password !== formData.confirmPassword) {
+      setMessage({ type: 'error', text: 'As senhas não coincidem.' });
+      return;
+    }
+
+    setLoading(true);
     try {
       const userData = {
         name: formData.name,
         username: formData.username,
         email: formData.email,
-        password: formData.senha,
-        dataNascimento: formData.dataNascimento,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        birthDate: formData.birthDate || null,
         gender: formData.gender,
       };
       await authService.register(userData);
       setMessage({ type: 'success', text: 'Usuário cadastrado com sucesso!' });
       setFormData(INITIAL_FORM_STATE);
     } catch (error) {
-      setMessage({ type: 'error', text: 'Erro ao cadastrar usuário. Tente novamente.' });
+      const errorMessage = error.response?.data?.message || 'Erro ao cadastrar usuário. Verifique os dados e tente novamente.';
+      setMessage({ type: 'error', text: errorMessage });
       console.error('Erro:', error);
     } finally {
       setLoading(false);
@@ -71,8 +80,8 @@ function UserRegistration() {
           </div>
 
            <div className="form-group">
-            <label htmlFor="username"><i className="fas fa-user" /> Usuário *</label>
-            <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required placeholder="Digite seu usuário" />
+            <label htmlFor="username"><i className="fas fa-at" /> Usuário *</label>
+            <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required placeholder="Digite seu nome de usuário" />
           </div>
 
           <div className="form-group">
@@ -81,22 +90,27 @@ function UserRegistration() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="senha"><i className="fas fa-lock" /> Senha *</label>
-            <input type="password" id="senha" name="senha" value={formData.senha} onChange={handleChange} required placeholder="Digite sua senha" />
+            <label htmlFor="password"><i className="fas fa-lock" /> Senha *</label>
+            <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required placeholder="Mínimo 6 caracteres" />
           </div>
 
           <div className="form-group">
-            <label htmlFor="dataNascimento"><i className="fas fa-calendar-alt" /> Data de Nascimento</label>
-            <input type="date" id="dataNascimento" name="dataNascimento" value={formData.dataNascimento} onChange={handleChange} />
+            <label htmlFor="confirmPassword"><i className="fas fa-lock" /> Confirmar Senha *</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required placeholder="Repita sua senha" />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="birthDate"><i className="fas fa-calendar-alt" /> Data de Nascimento</label>
+            <input type="date" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
           </div>
 
           <div className="form-group">
             <label htmlFor="gender"><i className="fas fa-venus-mars" /> Gênero</label>
             <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
               <option value="">Selecione...</option>
-              <option value="M">Masculino</option>
-              <option value="F">Feminino</option>
-              <option value="O">Outro</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+              <option value="Outro">Outro</option>
             </select>
           </div>
 
@@ -111,9 +125,7 @@ function UserRegistration() {
 
         <div className="registration-footer">
           <p>
-            <a href="/users">
-              <i className="fas fa-list" /> Ver lista de usuários
-            </a>
+            Já tem uma conta? <a href="/login"><i className="fas fa-sign-in-alt" /> Faça Login</a>
           </p>
         </div>
       </div>

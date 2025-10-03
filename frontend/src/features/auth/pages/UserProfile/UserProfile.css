@@ -1,0 +1,96 @@
+.profile-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+}
+
+.profile-bio {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.profile-stats span {
+  font-size: 1rem;
+}
+
+.follow-btn, .edit-profile-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.follow-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.edit-profile-btn {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.profile-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.news-grid-profile {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.news-card-profile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  text-decoration: none;
+  color: white;
+}
+
+.news-card-profile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.news-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  display: flex;
+  align-items: flex-end;
+  padding: 15px;
+}

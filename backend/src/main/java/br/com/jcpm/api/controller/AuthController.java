@@ -72,8 +72,10 @@ public class AuthController {
     user.setPassword(registerRequest.getPassword());
     user.setName(registerRequest.getName());
     user.setUserType(registerRequest.getUserType());
-    user.setBiography(registerRequest.getBiografia());
-    user.setProfileImageUrl(registerRequest.getUrlImagemPerfil());
+    user.setBiography(registerRequest.getBiography());
+    user.setProfileImageUrl(registerRequest.getProfileImageUrl());
+    user.setGender(registerRequest.getGender());
+    user.setBirthDate(registerRequest.getBirthDate());
 
     User savedUser = userService.save(user);
 

@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -64,9 +65,15 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private String password;
 
+  @Column(length = 512)
   private String profileImageUrl;
 
+  @Column(length = 1024)
   private String biography;
+
+  private String gender;
+
+  private LocalDate birthDate;
 
   @Column(nullable = false)
   private Boolean active = true;

@@ -7,6 +7,13 @@
   gap: 24px;
 }
 
+/* Estilo para o Link que envolve os cards */
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 /* Sidebar com widgets */
 .home-sidebar {
   display: flex;
@@ -16,7 +23,7 @@
 
 /* Conteúdo principal */
 .home-main {
-  min-width: 0; /* Permite que o grid funcione corretamente */
+  min-width: 0;
 }
 
 /* Header com widgets - removido, agora é sidebar */

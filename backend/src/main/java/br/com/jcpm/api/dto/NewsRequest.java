@@ -6,9 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * DTO para a criação e atualização de notícias.
- */
 @Getter
 @Setter
 public class NewsRequest {
@@ -23,9 +20,13 @@ public class NewsRequest {
   @NotBlank(message = "Conteúdo não pode ser vazio")
   private String content;
 
+  private String contentJson;
+
   @NotBlank(message = "URL da imagem não pode ser vazia")
   private String featuredImageUrl;
 
   @NotNull(message = "Prioridade não pode ser nula")
   private Integer priority;
+
+  private String status;
 }
